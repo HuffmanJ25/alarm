@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import './App.css';
 import Alarm from './Alarm'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
+import './App.css';
+import './css/alarm.css';
 
 injectTapEventPlugin();
 

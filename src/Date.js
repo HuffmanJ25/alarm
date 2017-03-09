@@ -1,5 +1,6 @@
 import React from 'react'
 import moment from 'moment'
+import './css/date.css'
 
 class AlarmDate extends React.Component {
 
@@ -7,7 +8,7 @@ class AlarmDate extends React.Component {
     const now = moment().format("ddd MMM Do YY");
     return(
       <div>
-        <h2>{now}</h2>
+        <h2 className='date'>{now}</h2>
       </div>
     )
   }

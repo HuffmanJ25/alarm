@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import DateComponent from './Date'
+import AlarmDate from './Date'
 import Time from './Time'
 import Countdown from './Countdown'
 import Paper from 'material-ui/Paper'
@@ -8,6 +8,7 @@ import Toggle from 'material-ui/Toggle'
 import RaisedButton from 'material-ui/RaisedButton'
 import moment from 'moment'
 import ReactHowler from 'react-howler'
+import './css/alarm.css';
 
 
 class Alarm extends Component {
@@ -19,12 +20,15 @@ class Alarm extends Component {
       minute: 30,
       period: "AM",
       alarmTime: 0,
-      timeFromAlarm: 0
+      timeFromAlarm: 0,
+      alarmStatus: false
     };
     this.handleHourSlider = this.handleHourSlider.bind(this);
     this.handleMinuteSlider = this.handleMinuteSlider.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
     this.handleAlarmAdd = this.handleAlarmAdd.bind(this);
+    this.playAlarm = this.playAlarm.bind(this);
+    this.handleStopAlarm = this.handleStopAlarm.bind(this);
   }
 
   componentDidMount() {
@@ -39,7 +43,7 @@ class Alarm extends Component {
   }
 
   tick() {
-    this.state.time === this.state.alarmTime ? "" : ""
+    this.state.time == this.state.alarmTime ? this.playAlarm() : false
     this.setState({time: new Date().toLocaleTimeString()});
   }
 
@@ -58,6 +62,7 @@ class Alarm extends Component {
   }
 
   handleAlarmAdd = () => {
+
     let hour
     this.state.period === "PM" ? hour = this.state.hour + 12 : hour = this.state.hour
     const minute = this.state.minute
@@ -73,34 +78,45 @@ class Alarm extends Component {
     })
   }
 
-  render(){
-    return(
-      <Paper>
-        <DateComponent />
-        <h3>Current Time | {this.state.time}</h3>
-        <h3>Alarm Time | {this.state.hour}:{this.state.minute} {this.state.period}  {this.state.timeFromAlarm !== 0 && <span>| {this.state.timeFromAlarm} </span>}</h3>
-        <Time onChange={this.handleHourSlider} slider={this.state.hour} max={11} sliderTitle="Hours" />
-        <Time onChange={this.handleMinuteSlider} slider={this.state.minute} max={60} sliderTitle="Minute" />
-        <Toggle label="AM/PM"
-                labelPosition="right"
-                onToggle={this.handleToggle}
-                />
-        <Countdown />
-        <RaisedButton
-          icon={<ActionAlarmAdd />}
-          onClick={this.handleAlarmAdd}
-        />
-        <ReactHowler
-          src={window.onload = function() {
-        return './sounds/Tornado.mp3';
-    }}
-          playing={true}
-          format="mp3"
-          loop='true'
-        />
-      </Paper>
-    )
+  playAlarm = () => {
+    this.setState({ alarmStatus: true })
   }
-}
+
+  handleStopAlarm = () => {
+    this.setState({ alarmStatus: false })
+  }
+
+  render(){
+      return(
+        <div className='alarm-wrapper'>
+          <Paper className='paper' style={{backgroundColor: '#003459;'}}>
+            <AlarmDate />
+            <h3 className='time'>Current Time | {this.state.time}</h3>
+            <h3 className='time'>Alarm Time | {this.state.hour}:{this.state.minute} {this.state.period}  {this.state.timeFromAlarm !== 0 && <span>| {this.state.timeFromAlarm} </span>}</h3>
+            <Time onChange={this.handleHourSlider} slider={this.state.hour} max={11} sliderTitle="Hour" />
+            <Time onChange={this.handleMinuteSlider} slider={this.state.minute} max={60} sliderTitle="Minute" />
+            <Toggle label="AM/PM"
+                    labelPosition="right"
+                    labelStyle={{color: '#00A8E8'}}
+                    onToggle={this.handleToggle}
+                    />
+            <RaisedButton
+              className='button'
+              icon={<ActionAlarmAdd />}
+              onClick={this.handleAlarmAdd}
+              buttonStyle={{backgroundColor: '#00A8E8'
+                          }}
+            />
+            <ReactHowler
+            src='Tornado.mp3'
+            playing={this.state.alarmStatus}
+          />
+            <RaisedButton className='button' onClick={this.playAlarm} label='Play Alarm' primary={true}/>
+            <RaisedButton className='button' onClick={this.handleStopAlarm} label='Stop Alarm' secondary={true} />
+          </Paper>
+        </div>
+      )
+    }
+  }
 
 export default Alarm
